@@ -14,6 +14,12 @@
 - **更新方針** — 手動追従 / 固定 / `npx skills update`
 - **ローカル変更** — なし / あり（あるなら内容）
 
+gist はライセンスがファイルではなくコメントで示されることがある。リポジトリのファイル一覧だけを見て「明示なし」と判断しない。
+
+```bash
+curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
+```
+
 ---
 
 ## 文章
@@ -25,7 +31,7 @@
 - 状態: 使用中
 - 使用先: 両方（`~/.agents/skills/japanese-tech-writing` に実体、`~/.claude/skills` から symlink）
 - 出所: k16shikano / gist [`fd287c3133457c4fd8f5601d34aa817d`](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
-- ライセンス: 明示なし（gist に LICENSE がない）
+- ライセンス: Unlicense（パブリックドメイン献呈）。gist のファイルではなく[コメント](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d?permalink_comment_id=6210840#gistcomment-6210840)で明示され、[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) を参照している
 - revision: `c7189cdc9c2520be50418209834145bdf3a46e97` (2026-07-24)
 - 更新方針: 手動追従
 - ローカル変更: なし
@@ -43,7 +49,7 @@
 - 状態: 使用中
 - 使用先: 両方（`~/.agents/skills/cognitive-rhythm-writing` に実体、`~/.claude/skills` から symlink）
 - 出所: k16shikano / gist [`eb2929f13ed19c97188393d297be8432`](https://gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432)
-- ライセンス: 明示なし（gist に LICENSE がない）
+- ライセンス: Unlicense（パブリックドメイン献呈）。[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) が 「k16shikano の public gist にはすべて Unlicense を適用します」と包括宣言しており、この gist は public
 - revision: `a3b1e26beced71d582e13314fb6f5b179b023c76`
 - 更新方針: 手動追従
 - ローカル変更: なし
