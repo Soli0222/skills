@@ -38,6 +38,7 @@ notes = """
 
 同じ gist のコメント 6201959 に、この規範を呼び出す派生 skill の実例（`argument-gap-edit`）がある。\
 """
+sha256 = "89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad"
 
 [[entry]]
 id       = "cognitive-rhythm-writing"
@@ -60,6 +61,7 @@ revision   = "a3b1e26beced71d582e13314fb6f5b179b023c76"
 notes = """
 SKILL.md 内で `../japanese-tech-writing/SKILL.md` を参照するので、両者を同じディレクトリ階層に置く必要がある。\
 """
+sha256 = "65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437"
 
 [[entry]]
 id       = "natural-japanese"

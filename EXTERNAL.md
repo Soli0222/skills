@@ -5,8 +5,9 @@
 > **このファイルは `external/manifest.toml` から生成している。手で編集しない。**
 > 変更は manifest 側で行い、`./scripts/install.sh docs` で再生成する。
 
-`npx skills` 経由のものの folder hash は台帳に持たず、`~/.agents/.skill-lock.json` を生成時に読んでいる。
-台帳は人間向け、lock ファイルは導入ツールの機械記録として役割を分ける。
+ここに書いてあるのは台帳の内容だけで、いま実際に何が入っているかは含まない。
+手元の導入状況は `./scripts/install.sh external status` で見る。
+`npx skills` が書く機械側の記録は `~/.agents/.skill-lock.json` にある。
 
 gist はライセンスがファイルではなくコメントで示されることがある。リポジトリのファイル一覧だけを見て「明示なし」と判断しない。
 
@@ -15,7 +16,6 @@ curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
 ```
 
 最終棚卸し: 2026-08-23
-生成: 2026-08-23
 
 ---
 
@@ -30,6 +30,7 @@ curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
 - 出所: k16shikano / gist [`fd287c3133457c4fd8f5601d34aa817d`](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
 - ライセンス: Unlicense（パブリックドメイン献呈）。gist のファイルではなく[コメント](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d?permalink_comment_id=6210840#gistcomment-6210840)で明示され、[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) を参照している
 - revision: `c7189cdc9c2520be50418209834145bdf3a46e97` (2026-07-24)
+- SKILL.md の sha256: `89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad`
 - 更新方針: 手動追従
 - ローカル変更: なし
 
@@ -51,6 +52,7 @@ curl -sfL https://gist.githubusercontent.com/k16shikano/fd287c3133457c4fd8f5601d
 - 出所: k16shikano / gist [`eb2929f13ed19c97188393d297be8432`](https://gist.github.com/k16shikano/eb2929f13ed19c97188393d297be8432)
 - ライセンス: Unlicense（パブリックドメイン献呈）。[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) が「k16shikano の public gist にはすべて Unlicense を適用します」と包括宣言しており、この gist は public
 - revision: `a3b1e26beced71d582e13314fb6f5b179b023c76`
+- SKILL.md の sha256: `65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437`
 - 更新方針: 手動追従
 - ローカル変更: なし
 
@@ -103,16 +105,6 @@ npx skills add emilkowalski/skills -g -a claude-code -a codex \
   --skill improve-animations \
   --skill review-animations
 ```
-
-生成時点の `~/.agents/.skill-lock.json` の記録:
-
-| skill | skillFolderHash |
-| --- | --- |
-| `emil-design-eng` | `0e6f8d7223a0abe73f81e890b3ec76257029a834` |
-| `apple-design` | `e9f5b472dfb28d8cf29f64001b6c01ef94b8168b` |
-| `animation-vocabulary` | `e6dc24ca1ff1e70c9677df9a1d2d1c80415cbb3c` |
-| `improve-animations` | `ec57cb65ea60a23af278d305d1425ce4f998f510` |
-| `review-animations` | `0012fc43a25cce5df019102ab28bb6a68ad9db3d` |
 
 未導入: `animate`, `animate-expo`, `find-animation-opportunities`, `write-swift`, `pick-ui-library`, `prototype`, `ask-sonner`
 
@@ -168,9 +160,3 @@ skill 自体を検索・導入するための skill。
 npx skills add vercel-labs/skills -g -a claude-code -a codex \
   --skill find-skills
 ```
-
-生成時点の `~/.agents/.skill-lock.json` の記録:
-
-| skill | skillFolderHash |
-| --- | --- |
-| `find-skills` | `76a98a285cb0434f3d39e1a873823556330e398b` |
