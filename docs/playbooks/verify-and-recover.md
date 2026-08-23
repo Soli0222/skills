@@ -3,7 +3,21 @@ type: Playbook
 title: 状態を検査して復旧する
 description: 宣言と導入済み状態の差異を調べ、安全な範囲で配置を修復する。
 tags: [verification, recovery, troubleshooting]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: install-sh
+    resource: ../../scripts/install.sh
+    title: 配置スクリプト
+    last_modified: 2026-08-23T17:29:24+09:00
+  - id: external-py
+    resource: ../../scripts/external.py
+    title: 配布 skill 管理スクリプト
+    last_modified: 2026-08-23T17:57:22+09:00
+  - id: tests-run
+    resource: ../../tests/run.sh
+    title: 回帰テスト
+    last_modified: 2026-08-23T17:57:22+09:00
 ---
 
 # 変更前に差異を確認する
@@ -40,14 +54,9 @@ skills CLI 由来の依存は、取得元を確かめるために `~/.agents/.sk
 ```bash
 ./tests/run.sh
 ./scripts/install.sh docs --check
-python3 skills/okf/scripts/validate_okf.py docs
+python3 skills/okf/scripts/validate_okf.py --strict docs
 ```
 
-# Citations
-
-[1] [配置スクリプト](../../scripts/install.sh)
-
-[2] [配布 skill 管理スクリプト](../../scripts/external.py)
-
-[3] [回帰テスト](../../tests/run.sh)
-
+このバンドルは自分で保守しているので、validator は `--strict` で走らせる。
+警告が出た時点で落ちるので、v0.2 の推奨事項からの逸脱を残さずに済む。
+validator は PyYAML を必要とし、無ければ終了コード 2 で止まる。

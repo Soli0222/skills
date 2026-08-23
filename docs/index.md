@@ -1,8 +1,5 @@
 ---
-title: skills リポジトリ運用ガイド
-description: 自作 skill と配布 skill の管理方法を、概念、手順、リファレンスに分けた OKF バンドル。
-tags: [agent-skills, operations, repository]
-timestamp: 2026-08-23T18:03:28+09:00
+okf_version: "0.2"
 ---
 
 # skills リポジトリ運用ガイド

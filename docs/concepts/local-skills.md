@@ -4,7 +4,17 @@ title: 自作 skill
 description: "`skills/<name>/` を原本として、エージェントの読み取り先へ symlink で公開する skill。"
 resource: ../../skills/
 tags: [local, symlink, source-of-truth]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: install-sh
+    resource: ../../scripts/install.sh
+    title: 配置スクリプト
+    last_modified: 2026-08-23T17:29:24+09:00
+  - id: tests-run
+    resource: ../../tests/run.sh
+    title: 回帰テスト
+    last_modified: 2026-08-23T17:57:22+09:00
 ---
 
 # 管理単位
@@ -28,9 +38,3 @@ timestamp: 2026-08-23T18:03:28+09:00
 
 新規追加は[自作 skill を追加する](/playbooks/add-local-skill.md)に従う。
 リンク切れや配置差異は[状態を検査して復旧する](/playbooks/verify-and-recover.md)で調べる。
-
-# Citations
-
-[1] [配置スクリプト](../../scripts/install.sh)
-
-[2] [回帰テスト](../../tests/run.sh)

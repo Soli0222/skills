@@ -3,7 +3,17 @@ type: Playbook
 title: 配布 skill を追加する
 description: 外部 skill の取得元を manifest へ登録し、導入と人向け台帳の生成までを行う。
 tags: [external, dependency, installation]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: readme
+    resource: ../../README.md
+    title: README の追加手順
+    last_modified: 2026-08-23T19:16:43+09:00
+  - id: external-py
+    resource: ../../scripts/external.py
+    title: 配布 skill 管理スクリプト
+    last_modified: 2026-08-23T17:57:22+09:00
 ---
 
 # 取得元を登録する
@@ -40,9 +50,3 @@ gist のライセンスは本文だけで判断しない。
 
 gist では、初回の `install --apply` が取得内容の SHA-256 を manifest に記録する。
 最後に `git diff` を読み、manifest と `EXTERNAL.md` の変更が同じ依存を表していることを確認する。
-
-# Citations
-
-[1] [README の追加手順](../../README.md)
-
-[2] [配布 skill 管理スクリプト](../../scripts/external.py)

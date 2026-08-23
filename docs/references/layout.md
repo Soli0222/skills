@@ -3,7 +3,17 @@ type: Path Reference
 title: 管理対象のファイル配置
 description: リポジトリ内の原本と、ホームディレクトリ内の導入済み実体の対応表。
 tags: [filesystem, layout, reference]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: readme
+    resource: ../../README.md
+    title: リポジトリ README
+    last_modified: 2026-08-23T19:16:43+09:00
+  - id: install-sh
+    resource: ../../scripts/install.sh
+    title: 配置スクリプト
+    last_modified: 2026-08-23T17:29:24+09:00
 ---
 
 # リポジトリ内
@@ -31,9 +41,3 @@ timestamp: 2026-08-23T18:03:28+09:00
 
 リポジトリ外の配置先を直接編集すると、次回の検査で宣言との差異になる。
 自作 skill は `skills/<name>/` を編集し、配布 skill は上流の更新を取り込むか manifest の依存を変更する。
-
-# Citations
-
-[1] [リポジトリ README](../../README.md)
-
-[2] [配置スクリプト](../../scripts/install.sh)

@@ -3,7 +3,17 @@ type: Playbook
 title: 自作 skill を追加する
 description: 新しい自作 skill を原本へ追加し、Codex と Claude Code から読めるようにする。
 tags: [local, authoring, installation]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: readme
+    resource: ../../README.md
+    title: README の追加手順
+    last_modified: 2026-08-23T19:16:43+09:00
+  - id: install-sh
+    resource: ../../scripts/install.sh
+    title: 配置スクリプト
+    last_modified: 2026-08-23T17:29:24+09:00
 ---
 
 # 前提
@@ -29,10 +39,3 @@ timestamp: 2026-08-23T18:03:28+09:00
 
 `CONFLICT` が出たときは `--force` をすぐに付けず、配置先と原本の差分を確認する。
 配置先だけに必要な変更があれば、先に原本へ取り込むか、別の skill として退避する。
-
-# Citations
-
-[1] [README の追加手順](../../README.md)
-
-[2] [配置スクリプト](../../scripts/install.sh)
-

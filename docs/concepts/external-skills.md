@@ -4,7 +4,21 @@ title: 配布 skill
 description: 外部の gist または GitHub リポジトリから導入し、manifest で再現可能に管理する skill。
 resource: ../../external/manifest.toml
 tags: [dependency, manifest, reproducibility]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: manifest
+    resource: ../../external/manifest.toml
+    title: 配布 skill の manifest
+    last_modified: 2026-08-23T17:57:22+09:00
+  - id: external-md
+    resource: ../../EXTERNAL.md
+    title: 生成された配布 skill 台帳
+    last_modified: 2026-08-23T17:57:22+09:00
+  - id: external-py
+    resource: ../../scripts/external.py
+    title: 配布 skill 管理スクリプト
+    last_modified: 2026-08-23T17:57:22+09:00
 ---
 
 # 依存宣言
@@ -32,12 +46,3 @@ GitHub リポジトリ由来の skill は `npx skills` に導入と更新を任�
 
 新しい依存は[配布 skill を追加する](/playbooks/add-external-skill.md)に従って登録する。
 既存依存の不一致は[状態を検査して復旧する](/playbooks/verify-and-recover.md)で切り分ける。
-
-# Citations
-
-[1] [配布 skill の manifest](../../external/manifest.toml)
-
-[2] [生成された配布 skill 台帳](../../EXTERNAL.md)
-
-[3] [配布 skill 管理スクリプト](../../scripts/external.py)
-

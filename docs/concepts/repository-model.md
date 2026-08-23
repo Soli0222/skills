@@ -4,7 +4,21 @@ title: skills リポジトリの管理モデル
 description: 自作 skill と配布 skill を、異なる原本と配置規則で管理する。
 resource: ../
 tags: [architecture, source-of-truth, agent-skills]
-timestamp: 2026-08-23T18:03:28+09:00
+generated: { by: codex/gpt-5.6-sol, at: 2026-08-23T18:03:28+09:00 }
+verified: { by: human:Soli0222, at: 2026-08-23T19:16:43+09:00 }
+sources:
+  - id: readme
+    resource: ../../README.md
+    title: リポジトリ README
+    last_modified: 2026-08-23T19:16:43+09:00
+  - id: install-sh
+    resource: ../../scripts/install.sh
+    title: 配置スクリプト
+    last_modified: 2026-08-23T17:29:24+09:00
+  - id: external-py
+    resource: ../../scripts/external.py
+    title: 配布 skill 管理スクリプト
+    last_modified: 2026-08-23T17:57:22+09:00
 ---
 
 # 二つの管理方式
@@ -32,12 +46,3 @@ skills CLI 由来の機械記録は `~/.agents/.skill-lock.json` に置かれる
 
 管理対象を変えるときは、原本か依存宣言を先に変更する。
 その後、[コマンド一覧](/references/commands.md)の dry-run で予定された操作を確認し、`--apply` で現実を宣言に合わせる。
-
-# Citations
-
-[1] [リポジトリ README](../../README.md)
-
-[2] [配置スクリプト](../../scripts/install.sh)
-
-[3] [配布 skill 管理スクリプト](../../scripts/external.py)
-
