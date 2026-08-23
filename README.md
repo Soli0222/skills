@@ -15,7 +15,7 @@
 | --- | --- |
 | [delegate-implementation](skills/delegate-implementation/) | 実装エージェント（Devin / Claude / Codex CLI）へ開発タスクを委譲する手順。Issue 単位の PR 作成、CI 確認、依存順の squash merge までを扱う |
 | [dependency-pr-release-summary](skills/dependency-pr-release-summary/) | Renovate などの依存更新 PR を、リポジトリ上の差分だけでなく上流アプリケーションのリリース影響まで含めて要約する |
-| [okf](skills/okf/) | Open Knowledge Format（YAML frontmatter を持つ Markdown のナレッジバンドル）の作成・検証・利用 |
+| [okf](skills/okf/) | Open Knowledge Format v0.2（YAML frontmatter を持つ Markdown のナレッジバンドル）の作成・検証・利用 |
 
 ## 配置
 
@@ -129,3 +129,6 @@ manifest には端末固有の値を入れない。`install` も `status` も ma
 
 ネットワークには出ない。gist の取得先は `GIST_RAW_BASE` と `GITHUB_API_BASE` で
 ローカルのフィクスチャに差し替えている。
+
+名前で絞り込める（`./tests/run.sh okf` など）。
+okf validator のテストは PyYAML があるときだけ走り、無ければ skip する。

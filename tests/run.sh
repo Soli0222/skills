@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install.sh と external.py の回帰テスト。
+# install.sh、external.py、okf validator の回帰テスト。
 #
 # ネットワークには出ない。gist の取得先は GIST_RAW_BASE と GITHUB_API_BASE で
 # ローカルのフィクスチャ（file:// URL）に差し替える。
@@ -410,6 +410,202 @@ test_docs_deterministic() {
   printf '\nnotes = "追記"\n' >> "$T/repo/external/manifest.toml"
   out="$("$EXT" docs --check 2>&1)"; rc=$?
   assert_rc 1 "$rc" "docs: manifest との食い違いを検出する"
+}
+
+
+# ------------------------------------------------------- okf validator
+
+# 検査対象は skills/okf/scripts/validate_okf.py。
+# ERROR は SPEC §11 の conformance だけ、それ以外は WARN、という切り分けを守らせる。
+
+OKF_V="$REPO/skills/okf/scripts/validate_okf.py"
+python3 -c 'import yaml' 2>/dev/null && HAS_YAML=1 || HAS_YAML=0
+
+# okf_bundle <相対パス> <本文> — $T/bundle 以下にファイルを作る
+okf_bundle() {
+  mkdir -p "$T/bundle/$(dirname "$1")"
+  printf '%s' "$2" > "$T/bundle/$1"
+}
+
+okf_run() { python3 "$OKF_V" "$@" "$T/bundle" 2>&1; }
+
+okf_skip() {  # PyYAML が無い環境では本体の検査ができない
+  if [ "$HAS_YAML" = 0 ]; then
+    printf '  %sskip%s %s（PyYAML なし）\n' "$DIM" "$RST" "$1"
+    return 0
+  fi
+  return 1
+}
+
+test_okf_requires_pyyaml() {
+  okf_bundle "a.md" '---
+type: Concept
+---
+'
+  # yaml の import に失敗する環境を作って、黙って通さないことを確かめる
+  mkdir -p "$T/noyaml"
+  printf 'raise ImportError\n' > "$T/noyaml/yaml.py"
+  out="$(PYTHONPATH="$T/noyaml" python3 "$OKF_V" "$T/bundle" 2>&1)"; rc=$?
+  assert_rc 2 "$rc" "okf: PyYAML が無ければ終了コード 2"
+  assert_has "PyYAML is required" "$out" "okf: PyYAML の不足を明示する"
+}
+
+test_okf_invalid_yaml_is_an_error() {
+  okf_skip "okf: 壊れた YAML を ERROR にする" && return 0
+  okf_bundle "a.md" '---
+type: Concept
+tags: [unterminated
+---
+
+body
+'
+  out="$(okf_run)"; rc=$?
+  assert_rc 1 "$rc" "okf: 壊れた YAML で終了コード 1"
+  assert_has "invalid YAML frontmatter" "$out" "okf: 壊れた YAML を ERROR にする"
+}
+
+test_okf_conformance_errors() {
+  okf_skip "okf: conformance 違反を ERROR にする" && return 0
+  okf_bundle "no-frontmatter.md" 'just prose
+'
+  okf_bundle "empty-type.md" '---
+type:
+---
+'
+  okf_bundle "log.md" '# Log
+
+## 2026-13-99
+* nope
+'
+  okf_bundle "sub/index.md" '---
+title: not allowed here
+---
+'
+  out="$(okf_run)"; rc=$?
+  assert_rc 1 "$rc" "okf: conformance 違反で終了コード 1"
+  assert_has "must start with YAML frontmatter" "$out" "okf: frontmatter 欠落を ERROR にする"
+  assert_has "non-empty 'type'" "$out" "okf: type 欠落を ERROR にする"
+  assert_has "log date heading" "$out" "okf: log の日付見出しを ERROR にする"
+  assert_has "only a bundle-root index.md" "$out" "okf: root 以外の index frontmatter を ERROR にする"
+  assert_has "NOT CONFORMANT" "$out" "okf: 非適合と要約する"
+}
+
+test_okf_soft_guidance_is_not_an_error() {
+  okf_skip "okf: optional family の不備は WARN" && return 0
+  # optional family がどれだけ壊れていても、SPEC §11 上は適合である
+  okf_bundle "a.md" '---
+type: Concept
+generated: nope
+verified: "not a list"
+sources: "not a list"
+status: published
+stale_after: not-a-date
+tags: a, b
+---
+
+body
+'
+  out="$(okf_run)"; rc=$?
+  assert_rc 0 "$rc" "okf: optional family の不備では落ちない"
+  assert_has "CONFORMANT" "$out" "okf: 適合として要約する"
+  assert_lacks "ERROR" "$out" "okf: optional family を ERROR にしない"
+  assert_has "'generated' is malformed" "$out" "okf: 壊れた generated を WARN にする"
+  assert_has "'sources' is malformed" "$out" "okf: 壊れた sources を WARN にする"
+  assert_has "'status' should be one of" "$out" "okf: 未知の status を WARN にする"
+
+  out="$(okf_run --strict)"; rc=$?
+  assert_rc 1 "$rc" "okf: --strict なら WARN で落ちる"
+
+  out="$(okf_run --conformance)"; rc=$?
+  assert_rc 0 "$rc" "okf: --conformance は lint を出さない"
+  assert_lacks "malformed" "$out" "okf: --conformance で WARN を抑える"
+}
+
+test_okf_computation_contract() {
+  okf_skip "okf: Attested Computation の契約を検査する" && return 0
+  okf_bundle "c.md" '---
+type: Attested Computation
+computation: {not: a-path}
+---
+
+# Computation
+
+```sql
+SELECT 1
+```
+'
+  out="$(okf_run)"
+  assert_has "'computation' must be a non-empty path string" "$out" \
+    "okf: 文字列でない computation を弾く"
+  assert_has "requires a non-empty 'runtime'" "$out" "okf: runtime 欠落を報告する"
+  assert_lacks "given twice" "$out" "okf: 不正な computation を二重指定と誤認しない"
+}
+
+test_okf_source_path_resolution() {
+  okf_skip "okf: source の相対パスを検査する" && return 0
+  okf_bundle "a.md" '---
+type: Concept
+sources:
+  - id: sibling
+    resource: missing.md
+  - id: scope
+    resource: all queries in BigQuery project X
+  - id: url
+    resource: https://example.com/x
+---
+
+body
+'
+  out="$(okf_run)"
+  assert_has "sources[0].resource target does not exist: missing.md" "$out" \
+    "okf: 同一ディレクトリの欠落パスを報告する"
+  assert_lacks "sources[1]" "$out" "okf: scope descriptor をパスとして扱わない"
+  assert_lacks "sources[2]" "$out" "okf: URL をパスとして扱わない"
+}
+
+test_okf_valid_bundle_is_silent() {
+  okf_skip "okf: 正しい v0.2 バンドルは無警告" && return 0
+  okf_bundle "index.md" '---
+okf_version: "0.2"
+---
+
+# Concepts
+
+* [Orders](orders.md) - One row per order.
+'
+  okf_bundle "orders.md" '---
+type: BigQuery Table
+title: Orders
+description: One row per order.
+tags: [sales]
+status: stable
+generated: { by: reference_agent/gemini-2.5-pro, at: 2026-06-20T22:53:05Z }
+verified: { by: human:soli, at: 2026-06-25T09:00:00Z }
+stale_after: 2026-12-31T00:00:00Z
+usage_window: { from: 2026-06-01T00:00:00Z, to: 2026-06-30T00:00:00Z }
+sources:
+  - id: policy
+    resource: /policies/revenue.md
+    title: Revenue policy
+    usage_count: 12
+    last_modified: 2026-05-30T00:00:00Z
+---
+
+Booked per the revenue policy.[^policy]
+
+[^policy]: Revenue policy
+'
+  okf_bundle "policies/revenue.md" '---
+type: Reference
+title: Revenue policy
+generated: { by: human:soli, at: 2026-06-01T00:00:00Z }
+---
+
+The policy.
+'
+  out="$(okf_run --strict)"; rc=$?
+  assert_rc 0 "$rc" "okf: 正しい v0.2 バンドルは --strict でも通る"
+  assert_has "0 error(s), 0 warning(s)" "$out" "okf: 警告を一つも出さない"
 }
 
 # ---------------------------------------------------------------- 実行
