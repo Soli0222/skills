@@ -2,7 +2,8 @@
 
 自作 Agent Skill の原本を置くリポジトリ。
 
-配布されている skill は実体を持たず、[EXTERNAL.md](EXTERNAL.md) に台帳として記録する。
+配布されている skill は実体を持たず、[`external/manifest.toml`](external/manifest.toml) に台帳として記録する。
+[EXTERNAL.md](EXTERNAL.md) はそこから生成する読み物で、手では編集しない。
 
 ## 自作 skill
 
@@ -28,12 +29,28 @@
 なお `~/.agents/skills` 配下は、このリポジトリ由来のものが symlink、配布 skill が実ディレクトリになる。
 判別規則が成り立つのは `~/.claude/skills` 配下だけである点に注意する。
 
-## インストール
+## 使い方
 
 ```bash
-./scripts/install.sh           # dry-run。何が変わるかだけ表示する
-./scripts/install.sh --apply   # 実際に symlink を張る
+./scripts/install.sh                  # dry-run。自作の symlink と配布の導入状況を出す
+./scripts/install.sh --apply          # 両方まとめて適用
 ```
+
+サブコマンドで片方だけ扱える。
+
+```bash
+./scripts/install.sh link --apply           # 自作: symlink だけ
+./scripts/install.sh external status        # 配布: 導入状況と pin・上流の一致
+./scripts/install.sh external install --apply
+./scripts/install.sh external update --apply
+./scripts/install.sh external add <url>     # manifest に項目を足す
+./scripts/install.sh docs                   # EXTERNAL.md を生成
+./scripts/install.sh docs --check           # 生成物が manifest と食い違っていないか
+```
+
+`--apply` を付けない限り何も書き換えない。名前を渡せばその skill だけを対象にできる。
+
+### 自作 skill（link）
 
 冪等なので、原本を編集したあとに張り直す必要はない。リンクが壊れたり張り替えられたときだけ再実行する。
 
@@ -45,9 +62,32 @@
 
 管理対象にない skill には一切触れない。
 
-環境変数 `AGENTS_SKILLS_DIR` / `CLAUDE_SKILLS_DIR` / `SKILLS_BACKUP_DIR` で配置先を差し替えられる。
+### 配布 skill（external）
+
+`external/manifest.toml` の `kind` で扱いが変わる。
+
+| kind | install | update |
+| --- | --- | --- |
+| `gist` | pin した revision を取得して `~/.agents/skills/<name>/SKILL.md` に置き、`~/.claude/skills` から symlink を張る | 上流の最新 revision との差分を表示し、`--apply` で本体と manifest の pin を同時に更新する |
+| `skills-cli` | `npx skills add <repo> -g -a … --skill … -y` を呼ぶ | `npx skills update <name> -g -y` を呼び、前後の folder hash を比較する |
+| `manual` | 何もしない（存在確認だけ） | 何もしない |
+
+`gist` は revision を pin するので、いつでも同じ内容を取り直せる。
+`skills-cli` は CLI に任せ、folder hash は台帳に持たず `~/.agents/.skill-lock.json` を都度読む。
+台帳は人間向け、lock ファイルは導入ツールの機械記録として役割を分けている。
+
+上書きの前には `~/.skills-backup/<timestamp>/external/` へ退避する。
 
 ## skill を追加する
 
+### 自作
+
 1. `skills/<name>/SKILL.md` を作る。frontmatter の `name` はディレクトリ名と一致させる
-2. `./scripts/install.sh --apply`
+2. `./scripts/install.sh link --apply`
+
+### 配布
+
+1. `./scripts/install.sh external add <gist または GitHub の URL>`
+2. `external/manifest.toml` に追記された項目の `TODO` を埋める。ライセンスは gist のコメントも確認する
+3. `./scripts/install.sh external install --apply`
+4. `./scripts/install.sh docs`

@@ -1,0 +1,145 @@
+# 配布 skill の台帳。ここが唯一の真実。
+#
+# EXTERNAL.md はこのファイルから生成する。手で編集しない。
+#   ./scripts/install.sh docs
+#
+# npx skills 経由で入れたものの folder hash は、このファイルではなく
+# ~/.agents/.skill-lock.json を live で読む。台帳と機械記録の役割を混ぜない。
+#
+# kind:   gist | skills-cli | manual
+# state:  active | planned | retired
+# update: manual | skills-cli | pinned
+
+inventoried = "2026-08-23"
+
+# ---------------------------------------------------------------- 文章
+
+[[entry]]
+id       = "japanese-tech-writing"
+category = "文章"
+summary  = "日本語技術文書の文章規範。整形、パラグラフライティング、論証の厳密さ、LLM っぽい空句の禁止など。"
+state    = "active"
+kind     = "gist"
+skills   = ["japanese-tech-writing"]
+agents   = ["claude-code", "codex"]
+update   = "manual"
+local_changes = "なし"
+license  = "Unlicense（パブリックドメイン献呈）"
+license_note = """
+gist のファイルではなく[コメント](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d?permalink_comment_id=6210840#gistcomment-6210840)で明示され、[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) を参照している\
+"""
+gist_owner = "k16shikano"
+gist_id    = "fd287c3133457c4fd8f5601d34aa817d"
+gist_file  = "SKILL.md"
+revision   = "c7189cdc9c2520be50418209834145bdf3a46e97"
+revision_date = "2026-07-24"
+notes = """
+2026-08-23 に `5ed08e4`（2026-06-16）から `c7189cd` へ追従した。差分は「辞書型断定で始めない」と「イ形容詞＋です を書かない」の2ルール追加。
+
+同じ gist のコメント 6201959 に、この規範を呼び出す派生 skill の実例（`argument-gap-edit`）がある。\
+"""
+
+[[entry]]
+id       = "cognitive-rhythm-writing"
+category = "文章"
+summary  = "説明的な文章の緩急を、認知モードの切替と未回収の緊張の管理として設計する規範。`japanese-tech-writing` と併用する。"
+state    = "active"
+kind     = "gist"
+skills   = ["cognitive-rhythm-writing"]
+agents   = ["claude-code", "codex"]
+update   = "manual"
+local_changes = "なし"
+license  = "Unlicense（パブリックドメイン献呈）"
+license_note = """
+[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) が「k16shikano の public gist にはすべて Unlicense を適用します」と包括宣言しており、この gist は public\
+"""
+gist_owner = "k16shikano"
+gist_id    = "eb2929f13ed19c97188393d297be8432"
+gist_file  = "SKILL.md"
+revision   = "a3b1e26beced71d582e13314fb6f5b179b023c76"
+notes = """
+SKILL.md 内で `../japanese-tech-writing/SKILL.md` を参照するので、両者を同じディレクトリ階層に置く必要がある。\
+"""
+
+[[entry]]
+id       = "natural-japanese"
+category = "文章"
+summary  = "読みやすい日本語の業務文書を書くための skill。形態素解析で「AI っぽい」パターンを検出する。"
+state    = "planned"
+kind     = "skills-cli"
+repo     = "coji/natural-japanese"
+skills   = ["natural-japanese"]
+agents   = ["claude-code", "codex"]
+update   = "skills-cli"
+local_changes = "なし"
+license  = "MIT"
+notes = """
+`japanese-tech-writing` と規範が競合しないか確認してから常用する。\
+"""
+
+# ---------------------------------------------------------------- UI・デザイン
+
+[[entry]]
+id       = "emilkowalski-skills"
+category = "UI・デザイン"
+title    = "emilkowalski/skills"
+summary  = "Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには12個あるが、使っているのは5個。"
+state    = "active"
+kind     = "skills-cli"
+repo     = "emilkowalski/skills"
+skills   = ["emil-design-eng", "apple-design", "animation-vocabulary", "improve-animations", "review-animations"]
+not_installed = ["animate", "animate-expo", "find-animation-opportunities", "write-swift", "pick-ui-library", "prototype", "ask-sonner"]
+agents   = ["claude-code", "codex"]
+installed_at = "2026-07-12"
+update   = "skills-cli"
+local_changes = "なし"
+license  = "MIT"
+
+[[entry]]
+id       = "hallmark"
+category = "UI・デザイン"
+summary  = "AI っぽくない Web UI を生成する design skill。`hallmark audit` / `redesign` / `study` の各動詞を持つ。"
+state    = "planned"
+kind     = "skills-cli"
+repo     = "Nutlope/hallmark"
+skills   = ["hallmark"]
+agents   = ["claude-code", "codex"]
+update   = "skills-cli"
+local_changes = "なし"
+license  = "MIT"
+notes = """
+`emil-design-eng` および Anthropic 公式の `frontend-design` と役割が重なる。3つ入れたままにするか整理するか、使ってから決める。\
+"""
+
+[[entry]]
+id       = "frontend-design"
+category = "UI・デザイン"
+summary  = "Anthropic 公式。テンプレート然としない視覚デザインの指針。"
+state    = "active"
+kind     = "manual"
+skills   = ["frontend-design"]
+agents   = ["claude-code"]
+location = "~/.claude/skills/frontend-design"
+origin   = "Anthropic 公式プラグイン（`claude-plugins-official` marketplace の `frontend-design`）"
+update   = "pinned"
+local_changes = "なし"
+license  = "同梱の `LICENSE.txt` を参照"
+notes = """
+`~/.claude/skills` 配下では数少ない実ディレクトリ。プラグインとしても `/Users/soli/work/misskey` に project scope で入っている。\
+"""
+
+# ---------------------------------------------------------------- ツール
+
+[[entry]]
+id       = "find-skills"
+category = "ツール"
+summary  = "skill 自体を検索・導入するための skill。"
+state    = "active"
+kind     = "skills-cli"
+repo     = "vercel-labs/skills"
+skills   = ["find-skills"]
+agents   = ["claude-code", "codex"]
+installed_at = "2026-07-12"
+update   = "skills-cli"
+local_changes = "なし"
+license  = "MIT"

@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 #
-# 自作 skill を各エージェントから読める場所へ symlink する。
+# 自作 skill と配布 skill をまとめて面倒を見る。
 #
+#   install.sh                     すべて dry-run（link と external install）
+#   install.sh --apply             すべて適用
+#
+#   install.sh link [--apply]      自作: skills/* を symlink する
+#   install.sh external status     配布: 導入状況と pin の一致を見る
+#   install.sh external install    配布: 台帳のとおりに導入する
+#   install.sh external update     配布: 上流に追従し pin を書き換える
+#   install.sh external add <src>  配布: manifest に項目を足す
+#   install.sh docs [--check]      EXTERNAL.md を manifest から生成する
+#
+# 自作 skill の配置:
 #   <repo>/skills/<name>          原本
 #   ~/.agents/skills/<name>   ->  原本（Codex などが読む）
 #   ~/.claude/skills/<name>   ->  ../../.agents/skills/<name>（Claude Code が読む）
@@ -21,16 +32,28 @@ AGENTS_SKILLS_DIR="${AGENTS_SKILLS_DIR:-$HOME/.agents/skills}"
 CLAUDE_SKILLS_DIR="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 SKILLS_BACKUP_DIR="${SKILLS_BACKUP_DIR:-$HOME/.skills-backup}"
 
+EXTERNAL_PY="$SCRIPT_DIR/external.py"
+
+# 先頭のコメントブロックだけを説明として出す
+usage() { awk 'NR>1 && /^#/ {sub(/^# ?/, ""); print; next} NR>1 {exit}' "${BASH_SOURCE[0]}"; }
+
+SUBCMD=link
+RUN_EXTERNAL=1
+case "${1:-}" in
+  link)     SUBCMD=link; RUN_EXTERNAL=0; shift ;;
+  external) shift; exec "$EXTERNAL_PY" "$@" ;;
+  docs)     shift; exec "$EXTERNAL_PY" docs "$@" ;;
+  -h|--help) usage; exit 0 ;;
+esac
+
 APPLY=0
 FORCE=0
 for arg in "$@"; do
   case "$arg" in
     --apply) APPLY=1 ;;
     --force) FORCE=1 ;;
-    -h|--help)
-      sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
-      exit 0 ;;
-    *) echo "unknown option: $arg" >&2; exit 2 ;;
+    -h|--help) usage; exit 0 ;;
+    *) echo "unknown option: $arg" >&2; usage >&2; exit 2 ;;
   esac
 done
 
@@ -201,4 +224,14 @@ if [ "$APPLY" -eq 1 ] && [ -d "$BACKUP_RUN" ]; then
   log "   バックアップ: $BACKUP_RUN"
 fi
 # 管理対象外の skill には一切触れない。
+
+# 引数なし / --apply のみのときは、配布 skill の導入まで続けて行う。
+if [ "$RUN_EXTERNAL" -eq 1 ]; then
+  log ""
+  log "== 配布 skill"
+  ext_args=(install)
+  if [ "$APPLY" -eq 1 ]; then ext_args+=(--apply); fi
+  "$EXTERNAL_PY" "${ext_args[@]}" || EXIT_CODE=1
+fi
+
 exit "$EXIT_CODE"
