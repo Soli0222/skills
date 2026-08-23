@@ -138,7 +138,17 @@ Anthropic 公式。テンプレート然としない視覚デザインの指針�
 - 更新方針: 固定
 - ローカル変更: なし
 
-`~/.claude/skills` 配下では数少ない実ディレクトリ。プラグインとしても `/Users/soli/work/misskey` に project scope で入っている。
+`~/.claude/skills` 配下の実ディレクトリで、`npx skills` でも gist でもないので、
+このリポジトリのスクリプトからは導入できない。`~/.claude/skills` を消すと失われる。
+
+戻すには退避した tar から取り出す。
+
+```bash
+tar -C ~ -xf ~/.skills-backup/20260823-174836-before-wipe/.claude-skills.tar .claude/skills/frontend-design
+```
+
+プラグインとしても `/Users/soli/work/misskey` に project scope で入っている。
+そちらで足りるなら、この項目を消して `~/.claude/skills` からも外してよい。
 
 ---
 
