@@ -1,0 +1,4 @@
+interface:
+  display_name: "Open Knowledge Format"
+  short_description: "Author and consume OKF knowledge bundles"
+  default_prompt: "Use $okf to author an OKF knowledge bundle for my dataset."

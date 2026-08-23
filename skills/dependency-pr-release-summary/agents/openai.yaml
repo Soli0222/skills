@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dependency PR Release Summary"
+  short_description: "Summarize dependency PRs with upstream releases"
+  default_prompt: "Use $dependency-pr-release-summary to summarize the open dependency PRs in this repo with chart/package changes and upstream application release impact."
