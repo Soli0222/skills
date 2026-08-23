@@ -6,9 +6,12 @@
 # npx skills 経由で入れたものの folder hash は、このファイルではなく
 # ~/.agents/.skill-lock.json を live で読む。台帳と機械記録の役割を混ぜない。
 #
-# kind:   gist | skills-cli | manual
-# state:  active | planned | retired
-# update: manual | skills-cli | pinned
+# ここに書いてあるものが、この構成が依存している配布 skill のすべて。
+# package.json と同じで「入っているか」は書かない。install で現実を宣言に合わせ、
+# status で現実が宣言とずれていないかを見る。
+#
+# kind:   gist | skills-cli
+# update: manual | skills-cli
 
 inventoried = "2026-08-23"
 
@@ -18,7 +21,6 @@ inventoried = "2026-08-23"
 id       = "japanese-tech-writing"
 category = "文章"
 summary  = "日本語技術文書の文章規範。整形、パラグラフライティング、論証の厳密さ、LLM っぽい空句の禁止など。"
-state    = "active"
 kind     = "gist"
 skills   = ["japanese-tech-writing"]
 agents   = ["claude-code", "codex"]
@@ -44,7 +46,6 @@ sha256 = "89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad"
 id       = "cognitive-rhythm-writing"
 category = "文章"
 summary  = "説明的な文章の緩急を、認知モードの切替と未回収の緊張の管理として設計する規範。`japanese-tech-writing` と併用する。"
-state    = "active"
 kind     = "gist"
 skills   = ["cognitive-rhythm-writing"]
 agents   = ["claude-code", "codex"]
@@ -67,7 +68,6 @@ sha256 = "65486e64f33ce2ab03c5db198b1f92e2838e71abfb1a80085d1b405340c11437"
 id       = "natural-japanese"
 category = "文章"
 summary  = "読みやすい日本語の業務文書を書くための skill。形態素解析で「AI っぽい」パターンを検出する。"
-state    = "planned"
 kind     = "skills-cli"
 repo     = "coji/natural-japanese"
 skills   = ["natural-japanese"]
@@ -86,13 +86,11 @@ id       = "emilkowalski-skills"
 category = "UI・デザイン"
 title    = "emilkowalski/skills"
 summary  = "Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには12個あるが、使っているのは5個。"
-state    = "active"
 kind     = "skills-cli"
 repo     = "emilkowalski/skills"
 skills   = ["emil-design-eng", "apple-design", "animation-vocabulary", "improve-animations", "review-animations"]
 not_installed = ["animate", "animate-expo", "find-animation-opportunities", "write-swift", "pick-ui-library", "prototype", "ask-sonner"]
 agents   = ["claude-code", "codex"]
-installed_at = "2026-07-12"
 update   = "skills-cli"
 local_changes = "なし"
 license  = "MIT"
@@ -101,7 +99,6 @@ license  = "MIT"
 id       = "hallmark"
 category = "UI・デザイン"
 summary  = "AI っぽくない Web UI を生成する design skill。`hallmark audit` / `redesign` / `study` の各動詞を持つ。"
-state    = "planned"
 kind     = "skills-cli"
 repo     = "Nutlope/hallmark"
 skills   = ["hallmark"]
@@ -114,44 +111,13 @@ notes = """
 """
 
 [[entry]]
-id       = "frontend-design"
-category = "UI・デザイン"
-summary  = "Anthropic 公式。テンプレート然としない視覚デザインの指針。"
-state    = "active"
-kind     = "manual"
-skills   = ["frontend-design"]
-agents   = ["claude-code"]
-location = "~/.claude/skills/frontend-design"
-origin   = "Anthropic 公式プラグイン（`claude-plugins-official` marketplace の `frontend-design`）"
-update   = "pinned"
-local_changes = "なし"
-license  = "同梱の `LICENSE.txt` を参照"
-notes = """
-`~/.claude/skills` 配下の実ディレクトリで、`npx skills` でも gist でもないので、
-このリポジトリのスクリプトからは導入できない。`~/.claude/skills` を消すと失われる。
-
-戻すには退避した tar から取り出す。
-
-```bash
-tar -C ~ -xf ~/.skills-backup/20260823-174836-before-wipe/.claude-skills.tar .claude/skills/frontend-design
-```
-
-プラグインとしても `/Users/soli/work/misskey` に project scope で入っている。
-そちらで足りるなら、この項目を消して `~/.claude/skills` からも外してよい。\
-"""
-
-# ---------------------------------------------------------------- ツール
-
-[[entry]]
 id       = "find-skills"
 category = "ツール"
 summary  = "skill 自体を検索・導入するための skill。"
-state    = "active"
 kind     = "skills-cli"
 repo     = "vercel-labs/skills"
 skills   = ["find-skills"]
 agents   = ["claude-code", "codex"]
-installed_at = "2026-07-12"
 update   = "skills-cli"
 local_changes = "なし"
 license  = "MIT"

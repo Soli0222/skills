@@ -78,14 +78,13 @@ PY
 
 manifest() { printf 'inventoried = "2026-08-23"\n%s\n' "$1" > "$T/repo/external/manifest.toml"; }
 
-gist_entry() {  # gist_entry <name> <id> <rev> [state] [追加行]
+gist_entry() {  # gist_entry <name> <id> <rev> [追加行]
   cat <<EOF
 
 [[entry]]
 id       = "$1"
 category = "テスト"
 summary  = "テスト用"
-state    = "${4:-active}"
 kind     = "gist"
 skills   = ["$1"]
 agents   = ["claude-code", "codex"]
@@ -96,7 +95,7 @@ gist_owner = "tester"
 gist_id    = "$2"
 gist_file  = "SKILL.md"
 revision   = "$3"
-${5:-}
+${4:-}
 EOF
 }
 
@@ -215,7 +214,6 @@ EOF
 id       = "cli-skill"
 category = "テスト"
 summary  = "テスト用"
-state    = "active"
 kind     = "skills-cli"
 repo     = "owner/repo"
 skills   = ["cli-skill"]
@@ -256,7 +254,6 @@ test_external_origin_mismatch() {
 id       = "cli-skill"
 category = "テスト"
 summary  = "テスト用"
-state    = "active"
 kind     = "skills-cli"
 repo     = "owner/repo"
 skills   = ["cli-skill"]
@@ -297,29 +294,35 @@ EOF
   assert_rc 0 "$rc" "出所照合: 一致していれば通る"
 }
 
-test_external_planned_to_active() {
+test_external_declared_is_a_dependency() {
+  # package.json と同じで、manifest に書いてあるものは入っているべきもの。
+  # 「導入予定」という中間状態は持たない。
   fixture_gist $GID1 tester rev001 SKILL.md "# 本文v1"
-  manifest "$(gist_entry demo $GID1 rev001 planned)"
-
-  out="$("$EXT" install --apply 2>&1)"
-  assert_lacks "install demo" "$out" "state遷移: 名前なしは planned を飛ばす"
-  [ -e "$T/agents/demo" ] && fail "state遷移: planned を導入してしまった" \
-                          || pass "state遷移: planned は導入されない"
-
-  out="$("$EXT" install demo --apply 2>&1)"; rc=$?
-  assert_rc 0 "$rc" "state遷移: 名前を渡せば導入する"
-  assert_has "state を active にした" "$out" "state遷移: state を書き換える"
-  grep -q 'state    = "active"' "$T/repo/external/manifest.toml" \
-    && pass "state遷移: manifest が active になる" || fail "state遷移: manifest が planned のまま"
+  manifest "$(gist_entry demo $GID1 rev001)"
 
   out="$("$EXT" status --offline 2>&1)"; rc=$?
-  assert_rc 0 "$rc" "state遷移: 後続の status が不整合にならない"
+  assert_rc 1 "$rc" "宣言: 書いてあるのに未導入なら終了コード 1"
+  assert_has "未導入" "$out" "宣言: 未導入として報告する"
 
-  # dry-run では書き換えない
-  manifest "$(gist_entry demo2 $GID1 rev001 planned)"
-  "$EXT" install demo2 >/dev/null 2>&1
-  grep -q 'state    = "planned"' "$T/repo/external/manifest.toml" \
-    && pass "state遷移: dry-run では書き換えない" || fail "state遷移: dry-run で書き換えた"
+  out="$("$EXT" install --apply 2>&1)"; rc=$?
+  assert_rc 0 "$rc" "宣言: 名前を渡さなくても install の対象になる"
+  [ -e "$T/agents/demo/SKILL.md" ] && pass "宣言: install で現実が宣言に追いつく" \
+                                   || fail "宣言: 導入されていない"
+
+  out="$("$EXT" status --offline 2>&1)"; rc=$?
+  assert_rc 0 "$rc" "宣言: 追いついたら status は通る"
+
+  # manifest は install で書き換わらない
+  before="$(cat "$T/repo/external/manifest.toml")"
+  "$EXT" install --apply >/dev/null 2>&1
+  [ "$before" = "$(cat "$T/repo/external/manifest.toml")" ] \
+    && pass "宣言: install は manifest を書き換えない" || fail "宣言: manifest が書き換わった"
+
+  # 宣言から外したものには触れない
+  manifest ""
+  out="$("$EXT" status --offline 2>&1)"; rc=$?
+  assert_rc 0 "$rc" "宣言: 外した項目は点検の対象外になる"
+  [ -e "$T/agents/demo" ] && pass "宣言: 外しても実体は消さない" || fail "宣言: 実体を消してしまった"
 }
 
 test_external_add_hostile_description() {

@@ -255,17 +255,7 @@ def cmd_status(args):
     recs = lock_records()
     rc = 0
     for e in entries(data, args.name):
-        print(f"\n{display_name(e)}  {DIM}[{e['kind']} / {e['state']}]{RST}")
-
-        if e["state"] == "planned":
-            here = [n for n in e["skills"] if (AGENTS_DIR / n).exists()]
-            if here:
-                warn(f"導入予定と記録されているが実際には入っている: {' '.join(here)}"
-                     f"（manifest の state を active に）")
-                rc = 1
-            else:
-                dim(f"導入予定 — 未導入: {' '.join(e['skills'])}")
-            continue
+        print(f"\n{display_name(e)}  {DIM}[{e['kind']}]{RST}")
 
         if e["kind"] == "gist":
             name = e["skills"][0]
@@ -306,14 +296,6 @@ def cmd_status(args):
                     rc |= report(state, msg, "check")
                     continue
                 rc |= report(*check_origin(n, e["repo"], recs.get(n)), mode="check")
-
-        elif e["kind"] == "manual":
-            loc = Path(os.path.expanduser(e["location"]))
-            if loc.exists():
-                ok(f"{loc}  {DIM}(自動管理の対象外){RST}")
-            else:
-                bad(f"見つからない — {loc}")
-                rc = 1
     print()
     return rc
 
@@ -326,8 +308,6 @@ def cmd_install(args):
     mode = "apply" if args.apply else "dryrun"
     rc = 0
     for e in entries(data, args.name):
-        if e["state"] != "active" and not args.name:
-            continue
         print(f"\n{display_name(e)}  {DIM}[{e['kind']}]{RST}")
         entry_rc = 0
 
@@ -390,17 +370,6 @@ def cmd_install(args):
                     continue
                 entry_rc |= report(*check_origin(n, e["repo"], recs.get(n)), mode=mode)
 
-        elif e["kind"] == "manual":
-            loc = Path(os.path.expanduser(e["location"]))
-            if loc.exists():
-                ok(f"ok      {loc}  {DIM}(手動管理){RST}")
-            else:
-                warn(f"未導入だが自動導入の対象外 — {e['origin']}")
-
-        # 名前を指定して導入に成功したら、台帳の state も追従させる
-        if args.apply and entry_rc == 0 and e["state"] == "planned" and args.name:
-            set_field(e["id"], "state", "active")
-            ok(f"state を active にした")
         rc |= entry_rc
 
     if not args.apply:
@@ -416,8 +385,6 @@ def cmd_update(args):
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     rc = 0
     for e in entries(data, args.name):
-        if e["state"] != "active" and not args.name:
-            continue
         print(f"\n{display_name(e)}  {DIM}[{e['update']}]{RST}")
 
         if e["update"] == "manual" and e["kind"] == "gist":
@@ -511,8 +478,7 @@ def cmd_add(args):
         rev = d["history"][0]["version"]
         fields = [
             ("id", name), ("category", args.category),
-            ("summary", d.get("description") or "TODO"),
-            ("state", "planned"), ("kind", "gist"),
+            ("summary", d.get("description") or "TODO"), ("kind", "gist"),
         ]
         tail = [
             ("update", "manual"), ("local_changes", "なし"),
@@ -535,7 +501,7 @@ def cmd_add(args):
         name = args.name_override or m.group(2)
         fields = [
             ("id", name), ("category", args.category), ("summary", "TODO"),
-            ("state", "planned"), ("kind", "skills-cli"), ("repo", repo),
+            ("kind", "skills-cli"), ("repo", repo),
         ]
         tail = [("update", "skills-cli"), ("local_changes", "なし"), ("license", "TODO")]
 
@@ -599,7 +565,6 @@ curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
 最終棚卸し: {inventoried}
 """
 
-STATE_JA = {"active": "使用中", "planned": "導入予定", "retired": "停止中"}
 UPDATE_JA = {"manual": "手動追従", "skills-cli": "`npx skills update`", "pinned": "固定"}
 AGENT_JA = {"claude-code": "Claude", "codex": "Codex"}
 
@@ -627,15 +592,12 @@ def render(data) -> str:
             if e["kind"] in ("gist", "skills-cli"):
                 n = e["skills"][0] if len(e["skills"]) == 1 else "<name>"
                 where += f"（`~/.agents/skills/{n}` に実体、`~/.claude/skills` から symlink）"
-            rows = [f"- 状態: {STATE_JA[e['state']]}", f"- 使用先: {where}"]
+            rows = [f"- 使用先: {where}"]
             if e["kind"] == "gist":
                 url = f"https://gist.github.com/{e['gist_owner']}/{e['gist_id']}"
                 rows.append(f"- 出所: {e['gist_owner']} / gist [`{e['gist_id']}`]({url})")
-            elif e["kind"] == "skills-cli":
-                rows.append(f"- 出所: [{e['repo']}](https://github.com/{e['repo']})")
             else:
-                rows.append(f"- 出所: {e['origin']}")
-                rows.append(f"- 場所: `{e['location']}`")
+                rows.append(f"- 出所: [{e['repo']}](https://github.com/{e['repo']})")
             rows.append(f"- ライセンス: {lic}")
             if e["kind"] == "gist":
                 d = f" ({e['revision_date']})" if e.get("revision_date") else ""
@@ -654,8 +616,7 @@ def render(data) -> str:
             elif e["kind"] == "skills-cli":
                 agents = " ".join(f"-a {a}" for a in e["agents"])
                 sk = " \\\n  ".join(f"--skill {s}" for s in e["skills"])
-                when = f"# {e['installed_at']} に導入\n" if e.get("installed_at") else ""
-                out.append(f"\n```bash\n{when}npx skills add {e['repo']} -g {agents} \\\n"
+                out.append(f"\n```bash\nnpx skills add {e['repo']} -g {agents} \\\n"
                            f"  {sk}\n```\n")
                 if e.get("not_installed"):
                     out.append("\n未導入: " +

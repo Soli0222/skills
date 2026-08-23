@@ -2,7 +2,9 @@
 
 自作 Agent Skill の原本を置くリポジトリ。
 
-配布されている skill は実体を持たず、[`external/manifest.toml`](external/manifest.toml) に台帳として記録する。
+配布されている skill は実体を持たず、[`external/manifest.toml`](external/manifest.toml) に依存として記録する。
+`package.json` と同じ考え方で、書いてあるものが「使うもの」、`install` で現実を宣言に合わせ、
+`status` で現実が宣言とずれていないかを見る。「導入予定」のような中間状態は持たない。
 [EXTERNAL.md](EXTERNAL.md) はそこから生成する読み物で、手では編集しない。
 
 ## 自作 skill
@@ -72,7 +74,6 @@
 | --- | --- | --- |
 | `gist` | pin した revision を取得して `~/.agents/skills/<name>/SKILL.md` に置き、`~/.claude/skills` から symlink を張る | 上流の最新 revision との差分を表示し、`--apply` で本体と manifest の pin を同時に更新する |
 | `skills-cli` | `npx skills add <repo> -g -a … --skill … -y` を呼ぶ | `npx skills update <name> -g -y` を呼び、前後の folder hash を比較する |
-| `manual` | 何もしない（存在確認だけ） | 何もしない |
 
 `gist` は revision と SKILL.md の sha256 を pin するので、いつでも同じ内容を取り直せる。
 `status --offline` はネットワークに出ず、手元のファイルをこの sha256 とだけ照合する。
@@ -86,11 +87,19 @@ symlink を同じ規則で確かめる。symlink が消えたり別の場所を�
 
 上書きの前には `~/.skills-backup/<timestamp>/external/` へ退避する。
 
-### 台帳と機械記録
+### どこに何があるか
 
-`EXTERNAL.md` は `external/manifest.toml` だけから決まる。手元に何が入っているかは
-読まないので、どの環境で生成しても同じものになる。現在の状況は `external status`、
-`npx skills` の機械記録は `~/.agents/.skill-lock.json` と、参照先を分けている。
+| | 対応するもの | git |
+| --- | --- | --- |
+| `external/manifest.toml` | `package.json`（依存の宣言と pin） | 追跡する |
+| `~/.agents/skills/<name>` | `node_modules`（導入された実体） | repo の外 |
+| `~/.agents/.skill-lock.json` | `npx skills` が書く機械記録 | repo の外 |
+
+manifest には端末固有の値を入れない。`install` も `status` も manifest を書き換えない。
+書き換えるのは、pin を進める `update --apply` と、項目を足す `add` だけで、
+どちらも人が意図して打つコマンドである。
+
+その結果 `EXTERNAL.md` は manifest だけから決まり、どの環境で生成しても同じものになる。
 
 ## skill を追加する
 
@@ -102,12 +111,13 @@ symlink を同じ規則で確かめる。symlink が消えたり別の場所を�
 ### 配布
 
 1. `./scripts/install.sh external add <gist または GitHub の URL>`
-   `state = "planned"` で追記される。id と skill 名の重複は弾く
+   id と skill 名の重複は弾く
 2. `external/manifest.toml` の `TODO` を埋める。ライセンスは gist のコメントも確認する
-3. `./scripts/install.sh external install <id> --apply`
-   名前を指定して導入に成功すると `state` が `active` になる（gist なら sha256 も記録される）。
-   名前を省いた `external install` は `active` のものしか見ないので、追加直後は id を渡す
+3. `./scripts/install.sh external install --apply`（gist なら sha256 もここで記録される）
 4. `./scripts/install.sh docs`
+
+使うのをやめるときは manifest から項目を消す。実体は消えないので、
+`~/.agents/skills/<name>` は自分で消すか `npx skills remove` を使う。
 
 ## テスト
 
