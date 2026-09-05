@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # リポジトリ状態のスナップショットを取る。
-# 実装セッションの起動前（Phase 3）と、push前ゲート（Phase 4）で同じものを実行し、
-# 出力をdiffして実装者の越境を検出する。
+# 必要な場合だけ起動前後に実行し、担当外のGit状態変更を調べる補助資料にする。
+# 完全な越境検知ではない。用途と限界はreferences/repository-audit.mdを参照。
 #
 # usage: bash scripts/snapshot.sh <repo> <remote>
 #
@@ -14,7 +14,7 @@
 #   worktree <path> | branch <refname>     (または `| detached`)
 #   status <path> | <XY> <file>
 #
-# 非ゼロで終了した場合、証跡は不完全である。実装セッションを起動せず、GOも出さない。
+# 非ゼロで終了した場合、比較資料は不完全なので監査成功として扱わない。
 set -euo pipefail
 
 if [ $# -ne 2 ]; then
@@ -43,7 +43,7 @@ while IFS= read -r -d '' f; do
 done < "$tmp"
 
 # worktreeのdirty状態は `git worktree list` に含まれない。これがないと、
-# コミットされていない他worktreeへの書き換えを検出できない。
+# コミットされていない変更の有無も比較できない。内容の変化までは記録しない。
 for wt in "${paths[@]}"; do
   git -C "$wt" status --porcelain=v1 --untracked-files=all > "$tmp"
   while IFS= read -r line; do printf 'status %s | %s\n' "$wt" "$line"; done < "$tmp"

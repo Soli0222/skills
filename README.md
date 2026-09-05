@@ -13,7 +13,7 @@
 
 | skill | 概要 |
 | --- | --- |
-| [delegate-implementation](skills/delegate-implementation/) | 実装エージェント（Devin / Claude / Codex CLI）へ開発タスクを委譲する手順。Issue 単位の PR 作成、CI 確認、依存順の squash merge までを扱う |
+| [delegate-implementation](skills/delegate-implementation/) | 開発タスクを分割し、ネイティブのサブエージェントや外部CLIへ委譲・統合する。worktreeの要否を判断し、依頼に応じてPR・CI・mergeまで扱う |
 | [dependency-pr-release-summary](skills/dependency-pr-release-summary/) | Renovate などの依存更新 PR を、リポジトリ上の差分だけでなく上流アプリケーションのリリース影響まで含めて要約する |
 | [okf](skills/okf/) | Open Knowledge Format v0.2（YAML frontmatter を持つ Markdown のナレッジバンドル）の作成・検証・利用 |
 

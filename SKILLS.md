@@ -124,13 +124,14 @@ improve-animations reconcile             plans/ を現在のコードと突き�
 
 ### delegate-implementation
 
-自分は計画・レビュー・git/GitHub 操作に徹し、コードとテストの実装は実装エージェント（Devin CLI、Claude CLI、Codex CLI）へ渡す進め方。
-複数 Issue、親子・依存 Issue、Issue 単位の PR、CI 確認、依存順の squash merge までを扱う。
+開発タスクを独立した成果物に分割し、ネイティブのサブエージェントまたは外部CLIへ委譲して、レビュー・統合する。
+直接実装も選択肢に含め、実行手段とworktreeの要否を別々に判断する。
 
-実装エージェントには push、PR 操作、CI 操作、merge、rebase、branch と worktree の操作を一切させない。
-実装者ごとの起動方法は `skills/delegate-implementation/references/implementer-*.md` にある。
+共有作業ツリーでは編集担当を分け、Git操作は親が担当する。
+専用worktreeは別branchでの並行開発や既存変更との分離が必要な場合に使う。
+ネイティブ委譲、外部CLI、GitHub運用の詳細は `skills/delegate-implementation/references/` にある。
 
-到達点を指定しなければ「Ready PR + 最新 HEAD の CI 成功」まで。merge まで進めたいなら明示して頼む。
+到達点は依頼に従う。ローカル実装、PR作成、CI確認、mergeを区別し、必要な範囲だけ進める。
 
 ### dependency-pr-release-summary
 
