@@ -29,6 +29,7 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 | [animation-vocabulary](#animation-vocabulary) | 配布 | 「あの動きの名前」を引く |
 | [delegate-implementation](#delegate-implementation) | 自作 | 実装を実装エージェントへ委譲して進める |
 | [dependency-pr-release-summary](#dependency-pr-release-summary) | 自作 | 依存更新 PR の影響をまとめる |
+| [misskey-upgrade](#misskey-upgrade) | 自作 | Misskey の upstream 更新から PKE 本番反映まで進める |
 | [okf](#okf) | 自作 | OKF 形式のナレッジバンドルを書く・検証する |
 | [find-skills](#find-skills) | 配布 | 足りない skill を探して入れる |
 
@@ -140,6 +141,22 @@ PR の差分やチャートのリリースノートで止めず、`appVersion` �
 
 Helm/Flux のチャート更新が主な想定だが、GitHub Actions や Ansible の変数更新も扱う。
 `gh` が使えて、リポジトリの git remote から対象を引ける状態で呼ぶ。
+
+### misskey-upgrade
+
+Soli0222/misskey の upstream 取り込み、競合解消、2つの package version 更新、develop → master の PR と Release、GHCR 公開確認を進める。
+設定変更は PKE の Helm chart に反映し、本番更新まで依頼された場合は Flux とアプリの稼働状態まで確認する。
+
+Codex では `$misskey-upgrade`、Claude Code では `/misskey-upgrade` を使う。
+
+```text
+$misskey-upgrade 最新リリースを取り込んで、PR作成まで
+$misskey-upgrade 最新リリースを取り込んで、本番更新まで
+$misskey-upgrade 前回の更新を続きから
+```
+
+到達点が省略された初回は PR 作成まで。既存の `psr.x.y` を保持して upstream version を更新する。
+再開時は保存した対象 SHA と実際の PR・Release・image・Flux の状態を照合する。
 
 ## 知識・ツール
 

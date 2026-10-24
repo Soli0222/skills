@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# install.sh、external.py、okf validator の回帰テスト。
+# install.sh、external.py、okf validator、Misskey version helper の回帰テスト。
 #
 # ネットワークには出ない。gist の取得先は GIST_RAW_BASE と GITHUB_API_BASE で
 # ローカルのフィクスチャ（file:// URL）に差し替える。
@@ -606,6 +606,13 @@ The policy.
   out="$(okf_run --strict)"; rc=$?
   assert_rc 0 "$rc" "okf: 正しい v0.2 バンドルは --strict でも通る"
   assert_has "0 error(s), 0 warning(s)" "$out" "okf: 警告を一つも出さない"
+}
+
+test_misskey_upgrade_versions() {
+  local out rc
+  out="$(PYTHONDONTWRITEBYTECODE=1 python3 "$REPO/tests/test_misskey_upgrade.py" 2>&1)"; rc=$?
+  assert_rc 0 "$rc" "misskey-upgrade: version 更新のオフライン検証"
+  if [ "$rc" -ne 0 ]; then printf '%s\n' "$out"; fi
 }
 
 # ---------------------------------------------------------------- 実行

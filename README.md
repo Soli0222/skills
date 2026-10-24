@@ -15,6 +15,7 @@
 | --- | --- |
 | [delegate-implementation](skills/delegate-implementation/) | 開発タスクを分割し、ネイティブのサブエージェントや外部CLIへ委譲・統合する。worktreeの要否を判断し、依頼に応じてPR・CI・mergeまで扱う |
 | [dependency-pr-release-summary](skills/dependency-pr-release-summary/) | Renovate などの依存更新 PR を、リポジトリ上の差分だけでなく上流アプリケーションのリリース影響まで含めて要約する |
+| [misskey-upgrade](skills/misskey-upgrade/) | Misskey の upstream 取り込み・リリースと、PKE の設定対応・Flux 本番反映を進める |
 | [okf](skills/okf/) | Open Knowledge Format v0.2（YAML frontmatter を持つ Markdown のナレッジバンドル）の作成・検証・利用 |
 
 ## 配置

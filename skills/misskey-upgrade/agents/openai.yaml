@@ -1,0 +1,4 @@
+interface:
+  display_name: "Misskey Upgrade"
+  short_description: "Misskey の upstream 取り込みから PKE 本番反映まで進める"
+  default_prompt: "$misskey-upgrade 最新リリースを取り込んで、PR作成まで進めて。"
