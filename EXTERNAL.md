@@ -15,7 +15,7 @@ gist はライセンスがファイルではなくコメントで示されるこ
 curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
 ```
 
-最終棚卸し: 2026-08-23
+最終棚卸し: 2026-11-09
 
 ---
 
@@ -23,22 +23,24 @@ curl -s https://api.github.com/gists/<id>/comments | jq -r '.[].body'
 
 ### japanese-tech-writing
 
-日本語技術文書の文章規範。整形、パラグラフライティング、論証の厳密さ、LLM っぽい空句の禁止など。
+日本語技術文書の文章規範。パラグラフライティング、論証の厳密さ、LLM っぽい空句と翻訳調の比喩の禁止など。
 
 - 使用先: 両方（`~/.agents/skills/japanese-tech-writing` に実体、`~/.claude/skills` から symlink）
 - 出所: k16shikano / gist [`fd287c3133457c4fd8f5601d34aa817d`](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d)
 - ライセンス: Unlicense（パブリックドメイン献呈）。gist のファイルではなく[コメント](https://gist.github.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d?permalink_comment_id=6210840#gistcomment-6210840)で明示され、[k16shikano/67625f2a7d96e3bbdfae8d571a936063](https://gist.github.com/k16shikano/67625f2a7d96e3bbdfae8d571a936063) を参照している
-- revision: `c7189cdc9c2520be50418209834145bdf3a46e97` (2026-07-24)
-- SKILL.md の sha256: `89e5e14385b1bfaa3c97631ca6a425f9ebbdbb8b18318fd881a79d0903b574ad`
+- revision: `8f2d57610a73efc97d743c9b0b0ecb1002e09fa4` (2026-09-09)
+- SKILL.md の sha256: `ad350e0e6f5630fd94d8ab98a6aee194053b0096fdc944c23e271d6dfa09ee68`
 - 更新方針: 手動追従
 - ローカル変更: なし
 
 ```bash
-curl -sfL https://gist.githubusercontent.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d/raw/c7189cdc9c2520be50418209834145bdf3a46e97/SKILL.md \
+curl -sfL https://gist.githubusercontent.com/k16shikano/fd287c3133457c4fd8f5601d34aa817d/raw/8f2d57610a73efc97d743c9b0b0ecb1002e09fa4/SKILL.md \
   -o ~/.agents/skills/japanese-tech-writing/SKILL.md
 ```
 
 2026-08-23 に `5ed08e4`（2026-06-16）から `c7189cd` へ追従した。差分は「辞書型断定で始めない」と「イ形容詞＋です を書かない」の2ルール追加。
+
+2026-11-09 に `8f2d576`（2026-09-09）へ追従した。「整形」の節（一文一行、脚注、ダッシュ・中黒の禁止など）と「辞書型断定で始めない」が削除され、「翻訳調の比喩と擬人化の禁止」の節、対比定義・概念導入の語順・複数媒体の書き分けの規則が追加された。frontmatter に `license` が入った。
 
 同じ gist のコメント 6201959 に、この規範を呼び出す派生 skill の実例（`argument-gap-edit`）がある。
 
@@ -78,13 +80,32 @@ npx skills add coji/natural-japanese -g -a claude-code -a codex \
 
 `japanese-tech-writing` と規範が競合しないか確認してから常用する。
 
+### yomiyasu
+
+AI が生成した日本語の不自然な比喩、曖昧な主述関係、不要な装飾を、意味を保ったまま推敲する skill。lint と前後比較の検査スクリプトを持つ。
+
+- 使用先: 両方（`~/.agents/skills/yomiyasu` に実体、`~/.claude/skills` から symlink）
+- 出所: [nanaism/yomiyasu](https://github.com/nanaism/yomiyasu)
+- ライセンス: MIT
+- 更新方針: `npx skills update`
+- ローカル変更: なし
+
+```bash
+npx skills add nanaism/yomiyasu -g -a claude-code -a codex \
+  --skill yomiyasu
+```
+
+名前を出して頼んだとき（`/yomiyasu`、「yomiyasu で推敲して」）だけ起動する description になっている。SKILL.md 自身が、他の日本語校正 skill と併用すると指示が食い違うことがあると注意しているので、`natural-japanese` や `japanese-tech-writing` と同時に当てない。
+
+Claude Code プラグインとしても配布されているが、ここでは他と揃えて `npx skills` で入れる。
+
 ---
 
 ## UI・デザイン
 
 ### emilkowalski/skills
 
-Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには12個あるが、使っているのは5個。
+Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには18個あるが、使っているのは5個。
 
 - 使用先: 両方（`~/.agents/skills/<name>` に実体、`~/.claude/skills` から symlink）
 - 出所: [emilkowalski/skills](https://github.com/emilkowalski/skills)
@@ -101,11 +122,11 @@ npx skills add emilkowalski/skills -g -a claude-code -a codex \
   --skill review-animations
 ```
 
-未導入: `animate`, `animate-expo`, `find-animation-opportunities`, `write-swift`, `pick-ui-library`, `prototype`, `ask-sonner`
+未導入: `animate`, `animate-expo`, `animation-performance`, `ask-sonner`, `break-ui`, `choreograph`, `find-animation-opportunities`, `gestures`, `mobile-native`, `pick-ui-library`, `prototype`, `remove-animations`, `write-swift`
 
 ### hallmark
 
-AI っぽくない Web UI を生成する design skill。`hallmark audit` / `redesign` / `study` の各動詞を持つ。
+AI っぽくない Web UI を生成する design skill。既存デザインには名前を出したときだけ `hallmark audit` / `redesign` で当てる。
 
 - 使用先: 両方（`~/.agents/skills/hallmark` に実体、`~/.claude/skills` から symlink）
 - 出所: [Nutlope/hallmark](https://github.com/Nutlope/hallmark)

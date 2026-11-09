@@ -20,8 +20,9 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 | --- | --- | --- |
 | [natural-japanese](#natural-japanese) | 配布 | 仕事の日本語文書を書く・直す。AI 臭さの診断も |
 | [japanese-tech-writing](#japanese-tech-writing) | 配布 | 技術書・技術記事の文章規範 |
+| [yomiyasu](#yomiyasu) | 配布 | AI が書いた日本語を、意味を保ったまま推敲する |
 | [cognitive-rhythm-writing](#cognitive-rhythm-writing) | 配布 | 読み物としての緩急がない文章を直す |
-| [hallmark](#hallmark) | 配布 | Web ページを新規に作る、監査する、作り直す |
+| [hallmark](#hallmark) | 配布 | Web ページを新規に作る。名指しで監査・作り直し |
 | [emil-design-eng](#emil-design-eng) | 配布 | UI の細部の判断に迷ったとき |
 | [apple-design](#apple-design) | 配布 | ジェスチャ、spring、シート、素材感 |
 | [improve-animations](#improve-animations) | 配布 | コードベース全体のモーションを棚卸しして計画にする |
@@ -52,10 +53,27 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 ### japanese-tech-writing
 
 技術書の章や技術記事のための規範。
-一文一行、引用ブロック、脚注、コラムといった整形と、パラグラフライティング、ツッコミどころの除去、LLM っぽい空句の禁止までを定める。
+パラグラフライティング、ツッコミどころの除去、LLM っぽい空句や翻訳調の比喩（「運ぶ」「効く」「開かれた問い」）の禁止までを定める。
+2026-09 の改訂で、一文一行や脚注といった整形の規則は外れた。
 
-`natural-japanese` と守備範囲が重なる。技術文書の整形と論証まで面倒を見てほしいときはこちら、読みやすさと自然さだけならあちらでよい。
+`natural-japanese` と守備範囲が重なる。技術文書の論証まで面倒を見てほしいときはこちら、読みやすさと自然さだけならあちらでよい。
 両方を同時に当てると規範がぶつかることがあるので、どちらを主にするか先に決める。
+
+### yomiyasu
+
+AI が生成した日本語の不自然な比喩、曖昧な主述関係、不要な装飾を直す推敲 skill。
+主張、比重、言い切りの強さ、文の働きを変えず、原文にない情報を足さないことを最優先にする。
+lint と推敲前後の比較スクリプトで、直した結果が原文の意味からずれていないかを確かめる。
+
+```
+/yomiyasu <対象>     推敲する。対象がなければ直前の本文か作業フォルダ直下の .md/.txt を選ぶ
+```
+
+名前を出したときだけ起動するので、使うときは `/yomiyasu` と打つか「yomiyasu で推敲して」と書く。
+ファイルを推敲したときは原文を書き換えず、別名で最終稿を保存する。
+
+SKILL.md が、他の日本語校正 skill との併用で指示がぶつかると注意している。
+`natural-japanese` や `japanese-tech-writing` と同じ文章に重ねて当てない。
 
 ### cognitive-rhythm-writing
 
@@ -69,15 +87,18 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 
 ### hallmark
 
-AI が作った感じのしない Web ページを作るための skill。動詞が3つある。
+AI が作った感じのしない Web ページを作るための skill。
+「ランディングページ作って」のような新規の依頼では自動で起動し、テーマを選んで作る。
+
+既存のデザインには、名前を出したときだけ動詞付きで当てる。
 
 ```
-hallmark audit <target>                 採点して直すべき点を並べる。編集はしない
-hallmark redesign <target> [--mood ...]  中身は保ったまま見た目の層だけ作り直す
-hallmark study <screenshot|URL>          好きなデザインの DNA を抽出する
+/hallmark audit <target>     採点して直すべき点を並べる。編集はしない
+/hallmark redesign <target>  中身と配線は保ったまま見た目を作り直す
 ```
 
-動詞なしで「ランディングページ作って」と頼めば、既定の Design flow でテーマを選んで作る。
+名前を出さずに既存デザインの修正を頼んだときは hallmark を使わず、そのプロジェクトのやり方で直す。
+以前あった `study`（スクリーンショットや URL からデザインを抽出する動詞）は上流で削除された。
 既存プロジェクトでは、消すファイルを挙げて確認を取ってから動く安全弁が入っている。
 
 ### emil-design-eng
