@@ -101,48 +101,6 @@ Claude Code プラグインとしても配布されているが、ここでは�
 
 ---
 
-## UI・デザイン
-
-### emilkowalski/skills
-
-Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには18個あるが、使っているのは5個。
-
-- 使用先: 両方（`~/.agents/skills/<name>` に実体、`~/.claude/skills` から symlink）
-- 出所: [emilkowalski/skills](https://github.com/emilkowalski/skills)
-- ライセンス: MIT
-- 更新方針: `npx skills update`
-- ローカル変更: なし
-
-```bash
-npx skills add emilkowalski/skills -g -a claude-code -a codex \
-  --skill emil-design-eng \
-  --skill apple-design \
-  --skill animation-vocabulary \
-  --skill improve-animations \
-  --skill review-animations
-```
-
-未導入: `animate`, `animate-expo`, `animation-performance`, `ask-sonner`, `break-ui`, `choreograph`, `find-animation-opportunities`, `gestures`, `mobile-native`, `pick-ui-library`, `prototype`, `remove-animations`, `write-swift`
-
-### hallmark
-
-AI っぽくない Web UI を生成する design skill。既存デザインには名前を出したときだけ `hallmark audit` / `redesign` で当てる。
-
-- 使用先: 両方（`~/.agents/skills/hallmark` に実体、`~/.claude/skills` から symlink）
-- 出所: [Nutlope/hallmark](https://github.com/Nutlope/hallmark)
-- ライセンス: MIT
-- 更新方針: `npx skills update`
-- ローカル変更: なし
-
-```bash
-npx skills add Nutlope/hallmark -g -a claude-code -a codex \
-  --skill hallmark
-```
-
-`emil-design-eng` および Anthropic 公式の `frontend-design` と役割が重なる。3つ入れたままにするか整理するか、使ってから決める。
-
----
-
 ## ツール
 
 ### find-skills

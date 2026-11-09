@@ -98,36 +98,7 @@ notes = """
 Claude Code プラグインとしても配布されているが、ここでは他と揃えて `npx skills` で入れる。\
 """
 
-# ---------------------------------------------------------------- UI・デザイン
-
-[[entry]]
-id       = "emilkowalski-skills"
-category = "UI・デザイン"
-title    = "emilkowalski/skills"
-summary  = "Emil Kowalski の UI ポリッシュ・アニメーション設計。リポジトリには18個あるが、使っているのは5個。"
-kind     = "skills-cli"
-repo     = "emilkowalski/skills"
-skills   = ["emil-design-eng", "apple-design", "animation-vocabulary", "improve-animations", "review-animations"]
-not_installed = ["animate", "animate-expo", "animation-performance", "ask-sonner", "break-ui", "choreograph", "find-animation-opportunities", "gestures", "mobile-native", "pick-ui-library", "prototype", "remove-animations", "write-swift"]
-agents   = ["claude-code", "codex"]
-update   = "skills-cli"
-local_changes = "なし"
-license  = "MIT"
-
-[[entry]]
-id       = "hallmark"
-category = "UI・デザイン"
-summary  = "AI っぽくない Web UI を生成する design skill。既存デザインには名前を出したときだけ `hallmark audit` / `redesign` で当てる。"
-kind     = "skills-cli"
-repo     = "Nutlope/hallmark"
-skills   = ["hallmark"]
-agents   = ["claude-code", "codex"]
-update   = "skills-cli"
-local_changes = "なし"
-license  = "MIT"
-notes = """
-`emil-design-eng` および Anthropic 公式の `frontend-design` と役割が重なる。3つ入れたままにするか整理するか、使ってから決める。\
-"""
+# ---------------------------------------------------------------- ツール
 
 [[entry]]
 id       = "find-skills"

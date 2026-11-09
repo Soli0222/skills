@@ -12,7 +12,7 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 
 明示したいときは `/<name>` と打つ。引数を取るものは `/natural-japanese score quick draft.md` のように続けて書く。
 
-`review-animations` だけは `disable-model-invocation: true` なので、自動では起動しない。使うときは必ず `/review-animations` と打つ。
+`yomiyasu` は description で「名前を出して頼まれたときだけ使う」と決めているので、自動では起動しない。使うときは `/yomiyasu` と打つ。
 
 ## 一覧
 
@@ -22,12 +22,6 @@ skill は frontmatter の `description` が今の依頼に合えば自動で起�
 | [japanese-tech-writing](#japanese-tech-writing) | 配布 | 技術書・技術記事の文章規範 |
 | [yomiyasu](#yomiyasu) | 配布 | AI が書いた日本語を、意味を保ったまま推敲する |
 | [cognitive-rhythm-writing](#cognitive-rhythm-writing) | 配布 | 読み物としての緩急がない文章を直す |
-| [hallmark](#hallmark) | 配布 | Web ページを新規に作る。名指しで監査・作り直し |
-| [emil-design-eng](#emil-design-eng) | 配布 | UI の細部の判断に迷ったとき |
-| [apple-design](#apple-design) | 配布 | ジェスチャ、spring、シート、素材感 |
-| [improve-animations](#improve-animations) | 配布 | コードベース全体のモーションを棚卸しして計画にする |
-| [review-animations](#review-animations) | 配布 | 目の前のアニメーション差分をレビューする |
-| [animation-vocabulary](#animation-vocabulary) | 配布 | 「あの動きの名前」を引く |
 | [delegate-implementation](#delegate-implementation) | 自作 | 実装を実装エージェントへ委譲して進める |
 | [dependency-pr-release-summary](#dependency-pr-release-summary) | 自作 | 依存更新 PR の影響をまとめる |
 | [misskey-upgrade](#misskey-upgrade) | 自作 | Misskey の upstream 更新から PKE 本番反映まで進める |
@@ -82,65 +76,6 @@ SKILL.md が、他の日本語校正 skill との併用で指示がぶつかる�
 
 `japanese-tech-writing` を前提に併用する設計で、SKILL.md から `../japanese-tech-writing/SKILL.md` を参照している。
 単体で当てても効くが、技術文書なら二つ並べて使うのが本来の形。
-
-## UI・デザイン
-
-### hallmark
-
-AI が作った感じのしない Web ページを作るための skill。
-「ランディングページ作って」のような新規の依頼では自動で起動し、テーマを選んで作る。
-
-既存のデザインには、名前を出したときだけ動詞付きで当てる。
-
-```
-/hallmark audit <target>     採点して直すべき点を並べる。編集はしない
-/hallmark redesign <target>  中身と配線は保ったまま見た目を作り直す
-```
-
-名前を出さずに既存デザインの修正を頼んだときは hallmark を使わず、そのプロジェクトのやり方で直す。
-以前あった `study`（スクリーンショットや URL からデザインを抽出する動詞）は上流で削除された。
-既存プロジェクトでは、消すファイルを挙げて確認を取ってから動く安全弁が入っている。
-
-### emil-design-eng
-
-Emil Kowalski の UI ポリッシュ観。
-アニメーションの是非、コンポーネントの設計、気づかれない細部の積み上げについて判断の基準をくれる。
-
-質問なしで呼ぶと挨拶だけ返して止まる作りなので、聞きたいことと一緒に呼ぶ。
-
-`hallmark` と役割が重なる。ページ全体を作るなら `hallmark`、部品や1つのインタラクションの詰めなら `emil-design-eng` と切り分けると衝突しない。
-
-### apple-design
-
-Apple 流のインターフェースと物理的なモーションを Web に翻訳したもの。
-ドラッグ、スワイプ、シート、spring、慣性と中断可能な遷移、半透明のマテリアル、タイポグラフィ（optical sizing、トラッキング、行送り）、reduced-motion が対象。
-
-### improve-animations
-
-コードベースのモーションを一通り見て、優先度つきの所見と、他のエージェントがそのまま実行できる実装計画を書く。
-**ソースコードは書き換えない**。作るのは `plans/` 配下のファイルだけ。
-
-```
-improve-animations                       recon → 全カテゴリ監査 → 計画
-improve-animations quick|deep            監査の深さを変える
-improve-animations performance など       カテゴリを絞る
-improve-animations plan <description>    監査を飛ばして1件だけ計画を書く
-improve-animations execute <plan>        計画を worktree で実行させ、差分をレビューする
-improve-animations reconcile             plans/ を現在のコードと突き合わせ直す
-```
-
-### review-animations
-
-目の前のアニメーション差分を、Emil Kowalski 由来の基準でレビューする。
-既定は指摘であって、承認は勝ち取るもの、という姿勢。
-
-自動起動しないので `/review-animations` と明示的に打つ。
-コードベース全体の棚卸しは `improve-animations` の仕事で、こちらは1つの差分を見る。
-
-### animation-vocabulary
-
-「ポップオーバーが開くときのぽよんとしたやつ」→ Pop in、「iOS のゴムみたいなスクロール」→ Rubber-banding のように、動きの説明から正確な用語を引く逆引き辞書。
-名前を知るためのもので、設計や実装はしない。
 
 ## 開発
 
